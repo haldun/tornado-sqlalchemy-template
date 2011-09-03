@@ -52,6 +52,8 @@ class IndexHandler(BaseHandler):
       self.render('index.html', form=form)
 
 
+# Write your handlers here
+
 def main():
   tornado.options.parse_command_line()
   http_server = tornado.httpserver.HTTPServer(Application())
