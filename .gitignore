@@ -1,0 +1,8 @@
+*.pyc
+*.so
+*~
+build
+dist/
+MANIFEST
+tornado.egg-info
+_auto2to3*
