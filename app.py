@@ -11,13 +11,19 @@ import tornado.web
 from tornado.options import define, options
 from tornado.web import url
 
+# Sqlalchemy imports
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+
 # App imports
 import forms
+import models
 import uimodules
 
 # Options
 define("port", default=8888, help="run on the given port", type=int)
 define("debug", default=False, type=bool)
+define("db_path", default='sqlite:////tmp/test.db', type=str)
 
 class Application(tornado.web.Application):
   def __init__(self):
@@ -34,9 +40,15 @@ class Application(tornado.web.Application):
       ui_modules=uimodules,
     )
     tornado.web.Application.__init__(self, handlers, **settings)
+    engine = create_engine(options.db_path, convert_unicode=True, echo=options.debug)
+    models.init_db(engine)
+    self.db = scoped_session(sessionmaker(bind=engine))
+
 
 class BaseHandler(tornado.web.RequestHandler):
-  pass
+  @property
+  def db(self):
+    return self.application.db
 
 
 class IndexHandler(BaseHandler):
